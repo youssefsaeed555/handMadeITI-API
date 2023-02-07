@@ -2,7 +2,13 @@ const express = require("express");
 
 const routes = express.Router();
 
-const { signup, login, forgetPassword } = require("../services/authServices");
+const {
+  signup,
+  login,
+  forgetPassword,
+  verifyCode,
+  resetPassword,
+} = require("../services/authServices");
 
 const {
   signupValidator,
@@ -14,5 +20,9 @@ routes.route("/signup").post(signupValidator, signup);
 routes.route("/login").post(validateLogin, login);
 
 routes.route("/forgetPassword").post(forgetPassword);
+
+routes.route("/verifyCode").post(verifyCode);
+
+routes.route("/resetPassword").put(resetPassword);
 
 module.exports = routes;

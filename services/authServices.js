@@ -100,7 +100,7 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
   user.isVerified = false;
   await user.save();
 
-  const message = `Hi ${user.name} your code for reset password is ${resetCode}`;
+  const message = `Hi ${user.userName} your code for reset password is ${resetCode}`;
   try {
     await sendMail({
       email: user.email,
@@ -113,4 +113,48 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
     user.isVerified = undefined;
     return next(new ApiError("failed to send mail ...", 500));
   }
+  return res.status(200).json({ message: "email sent successfully" });
+});
+
+exports.verifyCode = asyncHandler(async (req, res, next) => {
+  const hashCode = crypto
+    .createHash("sha256")
+    .update(req.body.code)
+    .digest("hex");
+
+  const user = await User.findOne({
+    passwordCodeReset: hashCode,
+    passwordCodeResetExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(new ApiError("reset code is expired or invalid", 400));
+  }
+  user.isVerified = true;
+  await user.save();
+  return res.status(200).json({ message: "success" });
+});
+
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return next(new ApiError("there is no user with this email", 404));
+  }
+  if (user.isVerified === false) {
+    return next(new ApiError("reset code not verified", 400));
+  }
+
+  const password = await bcrypt.hash(req.body.password, 12);
+
+  user.password = password;
+  user.passwordCodeReset = undefined;
+  user.passwordCodeResetExpire = undefined;
+  user.isVerified = undefined;
+  await user.save();
+
+  const token = generateToken(user._id);
+
+  return res
+    .status(200)
+    .json({ message: "update password successfully", token });
 });
