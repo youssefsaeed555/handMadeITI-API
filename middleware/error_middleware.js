@@ -15,7 +15,7 @@ const sendErrorForProd = (err, res) =>
   });
 
 const handleTokenExpiredError = () =>
-  new ApiError('new ApiError("token expired you must login again ...", 401)');
+  new ApiError("token expired you must login again ...", 401);
 
 const handleJsonWebTokenError = () =>
   new ApiError("invalid token, please login again ", 401);
