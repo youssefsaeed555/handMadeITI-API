@@ -34,7 +34,6 @@ exports.signupValidator = [
     .optional()
     .isMobilePhone("ar-EG")
     .withMessage("input valid egyptian phone"),
-  check("address").notEmpty().withMessage("address is required"),
   check("age")
     .optional()
     .isNumeric()

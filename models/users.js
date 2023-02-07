@@ -18,10 +18,6 @@ const userSchema = new mongoose.Schema({
   },
   phone: String,
   profileImg: String,
-  address: {
-    type: String,
-    required: [true, "address is required"],
-  },
   age: {
     type: Number,
     min: [16, "you must be greater than 16 years old"],

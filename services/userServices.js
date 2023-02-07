@@ -6,7 +6,7 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
   await User.findOneAndUpdate(
     req.user._id,
     {
-      password: await bcrypt.hash(req.user.password, 12),
+      password: await bcrypt.hash(req.body.password, 12),
       changePasswordAt: Date.now(),
     },
     { new: true }
