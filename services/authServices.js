@@ -1,8 +1,10 @@
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const User = require("../models/users");
 const ApiError = require("../utils/ApiError");
+const sendMail = require("../utils/sendMail");
 
 const generateToken = (payload) =>
   jwt.sign({ userId: payload }, process.env.JWT_SECRET, {
@@ -81,3 +83,34 @@ exports.isAllowedTo = (...roles) =>
     }
     next();
   });
+
+exports.forgetPassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return next(new ApiError("this email not found", 404));
+  }
+
+  //create 6 random number
+  const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+  //hashCode
+  const hashCode = crypto.createHash("sha256").update(resetCode).digest("hex");
+  user.passwordCodeReset = hashCode;
+  user.passwordCodeResetExpire = Date.now() + 10 * 1000 * 60;
+  user.isVerified = false;
+  await user.save();
+
+  const message = `Hi ${user.name} your code for reset password is ${resetCode}`;
+  try {
+    await sendMail({
+      email: user.email,
+      message: message,
+      subject: `your password reset code (valid for 10 minutes)`,
+    });
+  } catch (err) {
+    user.passwordCodeReset = undefined;
+    user.passwordCodeResetExpire = undefined;
+    user.isVerified = undefined;
+    return next(new ApiError("failed to send mail ...", 500));
+  }
+});

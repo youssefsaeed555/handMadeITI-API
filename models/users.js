@@ -32,6 +32,9 @@ const userSchema = new mongoose.Schema({
     default: "user",
   },
   changePasswordAt: Date,
+  passwordCodeReset: String,
+  passwordCodeResetExpire: Date,
+  isVerified: Boolean,
 });
 
 module.exports = mongoose.model("Users", userSchema);
