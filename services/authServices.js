@@ -29,3 +29,45 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({ message: "login success", token });
 });
+
+exports.protect = asyncHandler(async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (!token) {
+    return next(new ApiError('you must login to access this route", 401'));
+  }
+  const decode = jwt.verify(token, process.env.JWT_SECRET);
+
+  const user = await User.findById(decode.userId);
+
+  if (!user) {
+    return next(
+      new ApiError("the user that belongs to this token no longer exist", 401)
+    );
+  }
+
+  //check if user change password after create token
+
+  if (user.changePasswordAt) {
+    const changPasswordTime = parseInt(
+      user.changePasswordAt.getTime() / 1000,
+      10
+    );
+    if (changPasswordTime > user.iat) {
+      return next(
+        new ApiError(
+          "user recently changed his password, please login again",
+          401
+        )
+      );
+    }
+  }
+
+  req.user = user;
+  next();
+});

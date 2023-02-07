@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "seller", "admin"],
     default: "user",
   },
+  changePasswordAt: Date,
 });
 
 module.exports = mongoose.model("Users", userSchema);

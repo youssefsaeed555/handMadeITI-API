@@ -15,9 +15,17 @@ app.use(express.json());
 const globalErrorHandling = require("./middleware/error_middleware");
 const ApiError = require("./utils/ApiError");
 const auth = require("./routes/authServices");
+const userServices = require("./routes/userServices");
 
 //mounting routes
 app.use("/auth", auth);
+app.use("/user", userServices);
+
+const { protect } = require("./services/authServices");
+
+app.use("/s", protect, (req, res, next) => {
+  console.log("youssef");
+});
 
 app.all("*", (req, res, next) =>
   next(new ApiError(`can't find this route ${req.originalUrl}`, 400))
