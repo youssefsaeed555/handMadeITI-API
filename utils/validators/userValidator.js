@@ -1,7 +1,6 @@
 const { check } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const validator = require("../../middleware/express_validator");
-const User = require("../../models/users");
 
 exports.changePasswordValidator = [
   check("currentPassword")
