@@ -23,7 +23,7 @@ exports.signupValidator = [
     .withMessage("password must be greater than 8"),
   check("confirmPassword")
     .notEmpty()
-    .withMessage("password is required")
+    .withMessage("confirm password is required")
     .custom((val, { req }) => {
       if (val !== req.body.password) {
         throw new Error("confirm password not match password");
@@ -31,13 +31,14 @@ exports.signupValidator = [
       return true;
     }),
   check("phone")
-    .optional()
+    .notEmpty()
+    .withMessage("mobile phone is required")
     .isMobilePhone("ar-EG")
     .withMessage("input valid egyptian phone"),
   check("age")
     .optional()
     .isNumeric()
-    .isLength({ min: 8 })
+    .isLength({ min: 16 })
     .withMessage("you must be greater than 16 years old"),
   check("gender")
     .isIn(["male", "female"])

@@ -2,9 +2,11 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+const fs = require("fs/promises");
 const User = require("../models/users");
 const ApiError = require("../utils/ApiError");
 const sendMail = require("../utils/sendMail");
+const cloudinary = require("../utils/cloudinary");
 
 const generateToken = (payload) =>
   jwt.sign({ userId: payload }, process.env.JWT_SECRET, {
@@ -12,6 +14,12 @@ const generateToken = (payload) =>
   });
 
 exports.signup = asyncHandler(async (req, res, next) => {
+  if (req.file) {
+    const result = await cloudinary.uploads(req.file.path, "users");
+    req.body.profileImg = result.url;
+    req.body.profileImgId = result.id;
+    await fs.unlink(req.file.path);
+  }
   const password = await bcrypt.hash(req.body.password, 12);
   const newUser = await User.create({ ...req.body, password });
   const token = generateToken(newUser._id);
