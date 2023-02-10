@@ -36,8 +36,9 @@ exports.login = asyncHandler(async (req, res, next) => {
     return next(new ApiError("incorrect email or password", 401));
   }
   const token = generateToken(checkEmail._id);
+  const { role } = checkEmail;
 
-  return res.status(200).json({ message: "login success", token });
+  return res.status(200).json({ message: "login success", token, role });
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {
