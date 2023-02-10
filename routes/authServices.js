@@ -15,7 +15,11 @@ const {
   validateLogin,
 } = require("../utils/validators/authValidator");
 
-routes.route("/signup").post(signupValidator, signup);
+const upload = require("../middleware/upload_images");
+
+routes
+  .route("/signup")
+  .post(upload.uploadSingle("profileImg"), signupValidator, signup);
 
 routes.route("/login").post(validateLogin, login);
 
