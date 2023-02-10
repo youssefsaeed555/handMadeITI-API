@@ -2,9 +2,11 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+const fs = require("fs/promises");
 const User = require("../models/users");
 const ApiError = require("../utils/ApiError");
 const sendMail = require("../utils/sendMail");
+const cloudinary = require("../utils/cloudinary");
 
 const generateToken = (payload) =>
   jwt.sign({ userId: payload }, process.env.JWT_SECRET, {
@@ -12,6 +14,12 @@ const generateToken = (payload) =>
   });
 
 exports.signup = asyncHandler(async (req, res, next) => {
+  if (req.file) {
+    const result = await cloudinary.uploads(req.file.path, "users");
+    req.body.profileImg = result.url;
+    req.body.profileImgId = result.id;
+    await fs.unlink(req.file.path);
+  }
   const password = await bcrypt.hash(req.body.password, 12);
   const newUser = await User.create({ ...req.body, password });
   const token = generateToken(newUser._id);
@@ -28,8 +36,9 @@ exports.login = asyncHandler(async (req, res, next) => {
     return next(new ApiError("incorrect email or password", 401));
   }
   const token = generateToken(checkEmail._id);
+  const { role } = checkEmail;
 
-  return res.status(200).json({ message: "login success", token });
+  return res.status(200).json({ message: "login success", token, role });
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {

@@ -2,7 +2,7 @@
 const express = require("express");
 
 const app = express();
-
+const path = require("path");
 //config environment
 require("dotenv").config();
 
@@ -10,6 +10,7 @@ require("dotenv").config();
 require("./config/db")();
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "uploads")));
 
 //requires
 const globalErrorHandling = require("./middleware/error_middleware");
