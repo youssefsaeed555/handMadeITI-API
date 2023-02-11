@@ -7,11 +7,7 @@ const User = require("../models/users");
 const ApiError = require("../utils/ApiError");
 const sendMail = require("../utils/sendMail");
 const cloudinary = require("../utils/cloudinary");
-
-const generateToken = (payload) =>
-  jwt.sign({ userId: payload }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES,
-  });
+const generateToken = require("../utils/generateToken");
 
 exports.signup = asyncHandler(async (req, res, next) => {
   if (req.file) {
@@ -38,7 +34,9 @@ exports.login = asyncHandler(async (req, res, next) => {
   const token = generateToken(checkEmail._id);
   const { role } = checkEmail;
 
-  return res.status(200).json({ message: "login success", token, role });
+  return res
+    .status(200)
+    .json({ message: "login success", userId: checkEmail._id, token, role });
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {
