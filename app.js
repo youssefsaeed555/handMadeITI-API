@@ -24,11 +24,13 @@ app.use("/auth", auth);
 app.use("/user", userServices);
 app.use("/api/v1/categories", categoryRoutes);
 
+//Error handler to catch router does not exist from upove
 app.all("*", (req, res, next) =>
-  next(new ApiError(`can't find this route ${req.originalUrl}`, 400))
+  //Create an error and send it to error handling middleware
+  next(new ApiError(`Can't find this route : ${req.originalUrl}`, 400))
 );
 
-//global error handling
+//global error handling for express
 app.use(globalErrorHandling);
 
 const server = app.listen(process.env.PORT || 3000, () => {
