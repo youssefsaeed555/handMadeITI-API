@@ -16,10 +16,12 @@ const {
 
 const router = express.Router();
 
+const upload = require("../middleware/upload_images");
+
 router
   .route("/")
   .get(getCategories)
-  .post(createCategoryValidator, createCategory);
+  .post(upload.uploadSingle("image"), createCategoryValidator, createCategory);
 router
   .route("/:id")
   .get(getCategoryValidator, getCategory)

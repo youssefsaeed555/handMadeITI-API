@@ -15,7 +15,11 @@ const categorySchema = new mongoose.Schema(
       type: String,
       lowercase: true,
     },
-    image: String,
+    image: {
+      type: String,
+      required: [true, " Category image Required "],
+    },
+    imageId: String,
   },
   {
     //mongoose options , timestamps used to create 2 fields in DB (created at , updated at)

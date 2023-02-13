@@ -20,6 +20,7 @@ exports.createCategoryValidator = [
       if (category) {
         throw new Error("this category is exist");
       }
+      return true;
     }),
   validatorMiddleware,
 ];

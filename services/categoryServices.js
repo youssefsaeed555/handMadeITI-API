@@ -2,6 +2,8 @@ const slugify = require("slugify");
 const CategoryModel = require("../models/categoryModel");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/ApiError");
+const cloud = require("../utils/cloudinary");
+const fs = require("fs/promises");
 
 //Get All categories
 exports.getCategories = asyncHandler(async (req, res, next) => {
@@ -30,12 +32,19 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 
 //Create New category
 exports.createCategory = asyncHandler(async (req, res, next) => {
+  if (!req.file)
+    return next(new ApiError("image of category is required", 400));
+  const result = await cloud.uploads(req.file.path, "category");
   const name = req.body.name;
   const category = await CategoryModel.create({
     name,
     slug: slugify(name),
+    image: result.url,
+    imageId: result.id,
   });
+  await fs.unlink(req.file.path);
   res.status(201).json({
+    message: "create successfully",
     data: category,
   });
 });
