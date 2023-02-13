@@ -1,6 +1,6 @@
 const { check } = require("express-validator");
 const validator = require("../../middleware/express_validator");
-
+// const Category = require('../../models/categoryModel');//waiting
 exports.createProductValidator = [
   check("title")
   .isLength({min:3})
@@ -46,11 +46,17 @@ exports.createProductValidator = [
     .withMessage("Colors must be array of string"),
   check('imageCover').notEmpty().withMessage('Image Cover is required'),
   check('images').optional().isArray().withMessage('images should be array of string'),
-  // check('category')
-  //  .notEmpty()
-  //  .withMessage('Product must be belong to a category')
-  //  .isMongoId()
-  //  .withMessage('Invalid ID format '),
+   check('category')
+     .notEmpty()
+    .withMessage('Product must be belong to a category')
+    .isMongoId()
+    .withMessage('Invalid ID format ')
+      //check if this category exist or not
+    .custom((categoryId)=>Category.findById(categoryId).then((category)=>{
+     if(!category){
+       return Promise.reject(new Error(`No category for this id ${categoryId}`));
+     }
+    })),
   check('ratingsAverage')
    .optional()
    .isNumeric()

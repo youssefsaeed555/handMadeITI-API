@@ -8,7 +8,6 @@ const productSchema =new mongoose.Schema(
      trim:true,
      minlength:[3,'Too short product title'],
      maxlength:[100,'Too long product title'],
-
     },
     slug:{
         type:String,
@@ -33,27 +32,22 @@ const productSchema =new mongoose.Schema(
         type:Number,
         required:[true,'Product price is required'], 
         trim:true,
-        max:[20,'Too long product price'],
-          
+        max:[200000,'Too long product price'],        
     },
     priceAfterDiscount:{
         type:Number,    
     },
     colors:[String],
     //main image
-    imageCover:{
-        type:String,
-        required:[true,'Product Image cover is required'],
-
-    },
+    imageCover:{ type:String , required:[true,'Product Image cover is required']},
     //more images
     images:[String],
-    // category:{
-    //     type:mongoose.Schema.ObjectId,
-    //     //reference to category
-    //     // ref:'Category', //name of the category model 
-    //     required:[true,'Product must be belong to category']
-    // },
+    category:{
+        type:mongoose.Schema.ObjectId,
+       // reference to category
+        ref:'Category', //name of the category model 
+        required:[true,'Product must be belong to category']
+    },
     ratingsAverage:{
         type:Number,
         min:[1,'Rating must be above or equal 1.0'],
