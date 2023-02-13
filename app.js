@@ -20,8 +20,8 @@ const userServices = require("./routes/userServices");
 const categoryRoutes = require("./routes/categoryRoutes");
 
 //mounting routes
-app.use("/auth", auth);
-app.use("/user", userServices);
+app.use("/api/v1/auth", auth);
+app.use("/api/v1/user", userServices);
 app.use("/api/v1/categories", categoryRoutes);
 
 //Error handler to catch router does not exist from upove
