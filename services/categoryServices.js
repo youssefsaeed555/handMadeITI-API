@@ -1,14 +1,12 @@
 const slugify = require("slugify");
 const CategoryModel = require("../models/categoryModel");
 const asyncHandler = require("express-async-handler");
+const ApiError = require("../utils/ApiError");
 
 //Get All categories
-exports.getCategories = asyncHandler(async (req, res) => {
-  //Create Pagination
+exports.getCategories = asyncHandler(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
-  //Limit the products in one page #can be changed
   const limit = req.query.limit * 1 || 5;
-  // u want to skip how many product in next page [page 3 : (3-1)*5 = 10 , skip first 10 products]
   const skip = (page - 1) * limit;
   const categories = await CategoryModel.find({}).skip(skip).limit(limit);
   res.status(200).json({
@@ -19,13 +17,11 @@ exports.getCategories = asyncHandler(async (req, res) => {
 });
 
 // Get specific Category by ID
-exports.getCategory = asyncHandler(async (req, res) => {
+exports.getCategory = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
   const category = await CategoryModel.findById(id);
   if (!category) {
-    res.status(404).json({
-      msg: `There is no Category by this id ${id}`,
-    });
+    return next(new ApiError(`There is no Category by this id ${id}`, 404));
   }
   res.status(200).json({
     data: category,
@@ -33,7 +29,7 @@ exports.getCategory = asyncHandler(async (req, res) => {
 });
 
 //Create New category
-exports.createCategory = asyncHandler(async (req, res) => {
+exports.createCategory = asyncHandler(async (req, res, next) => {
   const name = req.body.name;
   const category = await CategoryModel.create({
     name,
@@ -45,7 +41,7 @@ exports.createCategory = asyncHandler(async (req, res) => {
 });
 
 //Update specific Category
-exports.updateCategory = asyncHandler(async (req, res) => {
+exports.updateCategory = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
   const name = req.body.name;
 
@@ -55,9 +51,9 @@ exports.updateCategory = asyncHandler(async (req, res) => {
   });
 
   if (!category) {
-    res.status(404).json({
-      msg: `There is no Category to Update by this id ${id}`,
-    });
+    return next(
+      new ApiError(`There is no Category to Update by this id ${id}`, 404)
+    );
   }
   res.status(200).json({
     data: category,
@@ -65,14 +61,14 @@ exports.updateCategory = asyncHandler(async (req, res) => {
 });
 
 //Delete Specific Category
-exports.deleteCategory = asyncHandler(async (req, res) => {
+exports.deleteCategory = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
   const category = await CategoryModel.findByIdAndDelete(id);
 
   if (!category) {
-    res.status(404).json({
-      msg: `There is no Category to delete by this id ${id}`,
-    });
+    return next(
+      new ApiError(`There is no Category to delete by this id ${id}`, 404)
+    );
   }
   res.status(204).send();
 });
