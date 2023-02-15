@@ -1,6 +1,6 @@
 //create express app
 const express = require("express");
-
+// npm run start:dev
 const app = express();
 const path = require("path");
 //config environment
@@ -17,14 +17,16 @@ const globalErrorHandling = require("./middleware/error_middleware");
 const ApiError = require("./utils/ApiError");
 const auth = require("./routes/authServices");
 const userServices = require("./routes/userServices");
+const productRoute = require ("./routes/productRoute");
 const categoryRoutes = require("./routes/categoryRoutes");
 
 //mounting routes
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/user", userServices);
 app.use("/api/v1/categories", categoryRoutes);
+app.use('/api/v1/products',productRoute);
 
-//Error handler to catch router does not exist from upove
+
 app.all("*", (req, res, next) =>
   //Create an error and send it to error handling middleware
   next(new ApiError(`Can't find this route : ${req.originalUrl}`, 400))
