@@ -26,7 +26,6 @@ app.use("/api/v1/user", userServices);
 app.use("/api/v1/categories", categoryRoutes);
 app.use('/api/v1/products',productRoute);
 
-//Error handler to catch router does not exist from above
 
 app.all("*", (req, res, next) =>
   //Create an error and send it to error handling middleware
