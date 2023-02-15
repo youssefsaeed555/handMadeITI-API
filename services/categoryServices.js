@@ -1,9 +1,10 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const slugify = require("slugify");
-const CategoryModel = require("../models/categoryModel");
+const fs = require("fs/promises");
 const asyncHandler = require("express-async-handler");
+const CategoryModel = require("../models/categoryModel");
 const ApiError = require("../utils/ApiError");
 const cloud = require("../utils/cloudinary");
-const fs = require("fs/promises");
 
 //Get All categories
 exports.getCategories = asyncHandler(async (req, res, next) => {
@@ -20,7 +21,7 @@ exports.getCategories = asyncHandler(async (req, res, next) => {
 
 // Get specific Category by ID
 exports.getCategory = asyncHandler(async (req, res, next) => {
-  const id = req.params.id;
+  const { id } = req.params;
   const category = await CategoryModel.findById(id);
   if (!category) {
     return next(new ApiError(`There is no Category by this id ${id}`, 404));
@@ -35,7 +36,7 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
   if (!req.file)
     return next(new ApiError("image of category is required", 400));
   const result = await cloud.uploads(req.file.path, "category");
-  const name = req.body.name;
+  const { name } = req.body;
   const category = await CategoryModel.create({
     name,
     slug: slugify(name),
@@ -51,8 +52,8 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
 
 //Update specific Category
 exports.updateCategory = asyncHandler(async (req, res, next) => {
-  const id = req.params.id;
-  const name = req.body.name;
+  const { id } = req.params;
+  const { name } = req.body;
 
   const category = await CategoryModel.findByIdAndUpdate(id, {
     name,
@@ -71,7 +72,7 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 
 //Delete Specific Category
 exports.deleteCategory = asyncHandler(async (req, res, next) => {
-  const id = req.params.id;
+  const { id } = req.params;
   const category = await CategoryModel.findByIdAndDelete(id);
 
   if (!category) {
