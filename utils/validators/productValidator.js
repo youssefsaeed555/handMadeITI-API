@@ -1,6 +1,7 @@
 const { check } = require("express-validator");
 const validator = require("../../middleware/express_validator");
-// const Category = require('../../models/categoryModel');//waiting
+// eslint-disable-next-line import/newline-after-import
+const Category = require('../../models/categoryModel');//waiting
 exports.createProductValidator = [
   check("title")
   .isLength({min:3})
@@ -10,7 +11,7 @@ exports.createProductValidator = [
   check("description")
     .notEmpty()
     .withMessage("product description is required")
-    .isLength({max:2000})
+    .isLength({min:20})
     .withMessage("Too long description"),
   check("quantity")
     .notEmpty()
@@ -39,12 +40,10 @@ exports.createProductValidator = [
         }
         return true;
     }),
-
   check("colors")
     .optional()
     .isArray()
     .withMessage("Colors must be array of string"),
-  check('imageCover').notEmpty().withMessage('Image Cover is required'),
   check('images').optional().isArray().withMessage('images should be array of string'),
    check('category')
      .notEmpty()

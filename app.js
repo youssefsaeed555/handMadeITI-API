@@ -18,17 +18,22 @@ const ApiError = require("./utils/ApiError");
 const auth = require("./routes/authServices");
 const userServices = require("./routes/userServices");
 const productRoute = require ("./routes/productRoute");
-//mounting routes
-app.use('/api/v1/products',productRoute);
-app.use("/auth", auth);
-app.use("/user", userServices);
+const categoryRoutes = require("./routes/categoryRoutes");
 
+//mounting routes
+app.use("/api/v1/auth", auth);
+app.use("/api/v1/user", userServices);
+app.use("/api/v1/categories", categoryRoutes);
+app.use('/api/v1/products',productRoute);
+
+//Error handler to catch router does not exist from above
 
 app.all("*", (req, res, next) =>
-  next(new ApiError(`can't find this route ${req.originalUrl}`, 400))
+  //Create an error and send it to error handling middleware
+  next(new ApiError(`Can't find this route : ${req.originalUrl}`, 400))
 );
 
-//global error handling
+//global error handling for express
 app.use(globalErrorHandling);
 
 const server = app.listen(process.env.PORT || 3000, () => {

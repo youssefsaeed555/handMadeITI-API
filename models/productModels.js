@@ -45,7 +45,7 @@ const productSchema =new mongoose.Schema(
     category:{
         type:mongoose.Schema.ObjectId,
        // reference to category
-        ref:'Category', //name of the category model 
+        ref:'categoryModel', //name of the category model 
         required:[true,'Product must be belong to category']
     },
     ratingsAverage:{

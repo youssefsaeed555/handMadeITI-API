@@ -18,12 +18,10 @@ const {
   deleteProductValidator
 } = require("../utils/validators/productValidator");
 
-// const upload = require('../middleware/upload_images');
+const upload = require('../middleware/upload_images');
 
-// const mixFiles = [{name:"imageCover",maxCount:1},{name:"images",maxCount:5}];
-
-// routes.route("/").get(getProducts).post(upload.mixFiles(mixFiles),createProductValidator,createProduct);
-routes.route("/").get(getProducts).post(createProductValidator,createProduct);
+const mixFiles = [{name:"imageCover",maxCount:1},{name:"images",maxCount:5}];
+routes.route("/").get(getProducts).post(upload.mixFiles(mixFiles),createProductValidator,createProduct);
 
 routes.route('/:id')
 .get(getProductValidator,getProduct)
