@@ -22,8 +22,6 @@ const categorySchema = new mongoose.Schema(
     imageId: String,
   },
   {
-    //mongoose options , timestamps used to create 2 fields in DB (created at , updated at)
-    // will be used to get newest categories
     timestamps: true,
   }
 );

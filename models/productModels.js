@@ -1,64 +1,63 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const productSchema =new mongoose.Schema(
- {
-    title:{
-     type:String,
-     required:true,
-     trim:true,
-     minlength:[3,'Too short product title'],
-     maxlength:[100,'Too long product title'],
+const productSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: [3, "Too short product title"],
+      maxlength: [100, "Too long product title"],
     },
-    slug:{
-        type:String,
-        required:true,
-        lowercase:true,
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
     },
-    description:{
-        type:String,
-        required:[true,'Product description is required'],
-        minlength:[20,'Too short product description'],
+    description: {
+      type: String,
+      required: [true, "Product description is required"],
+      minlength: [20, "Too short product description"],
     },
-    quantity:{
-        type:Number,
-        required:[true,'Product quantity is required'],
-
+    quantity: {
+      type: Number,
+      required: [true, "Product quantity is required"],
     },
-    sold:{
-        type:Number,
-        default:0,
+    sold: {
+      type: Number,
+      default: 0,
     },
-    price:{
-        type:Number,
-        required:[true,'Product price is required'], 
-        trim:true,
-        max:[200000,'Too long product price'],        
+    price: {
+      type: Number,
+      required: [true, "Product price is required"],
+      trim: true,
+      max: [200000, "Too long product price"],
     },
-    priceAfterDiscount:{
-        type:Number,    
+    priceAfterDiscount: {
+      type: Number,
     },
-    colors:[String],
-    //main image
-    imageCover:{ type:String , required:[true,'Product Image cover is required']},
-    //more images
-    images:[String],
-    category:{
-        type:mongoose.Schema.ObjectId,
-       // reference to category
-        ref:'categoryModel', //name of the category model 
-        required:[true,'Product must be belong to category']
+    colors: [String],
+    imageCover: {
+      type: String,
+      required: [true, "Product Image cover is required"],
     },
-    ratingsAverage:{
-        type:Number,
-        min:[1,'Rating must be above or equal 1.0'],
-        max:[5,'Rating must be below or equal 5.0 ']
+    images: [String],
+    category: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Category",
+      required: [true, "Product must be belong to category"],
     },
-    ratingQuantity:{
-        type:Number ,
-        default:0
-    }
+    ratingsAverage: {
+      type: Number,
+      min: [1, "Rating must be above or equal 1.0"],
+      max: [5, "Rating must be below or equal 5.0 "],
+    },
+    ratingQuantity: {
+      type: Number,
+      default: 0,
+    },
   },
-{timestamps:true}
+  { timestamps: true }
 );
 
-module.exports=mongoose.model('Product',productSchema);
+module.exports = mongoose.model("Product", productSchema);
