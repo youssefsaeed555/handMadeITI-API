@@ -9,7 +9,7 @@ const {
   checkReview,
 } = require("../utils/validators/reviewValidator");
 
-const routes = express.Router();
+const routes = express.Router({ mergeParams: true });
 
 const {
   getAllReviews,
@@ -17,12 +17,20 @@ const {
   createReview,
   updateReview,
   deleteReview,
+  setParamsOfProduct,
+  setProductBody,
 } = require("../services/reviewServices");
 
 routes
   .route("/")
-  .get(getAllReviews)
-  .post(protect, isAllowedTo("user"), validateCreateReview, createReview);
+  .get(setParamsOfProduct, getAllReviews)
+  .post(
+    protect,
+    isAllowedTo("user"),
+    setProductBody,
+    validateCreateReview,
+    createReview
+  );
 routes
   .route("/:id")
   .get(checkReview, getReview)

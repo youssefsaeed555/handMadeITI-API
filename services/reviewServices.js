@@ -2,11 +2,27 @@ const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/ApiError");
 const Reviews = require("../models/reviewsModel");
 
+exports.setParamsOfProduct = (req, res, next) => {
+  const objFilter = {};
+  if (req.params.productId) {
+    objFilter.product = req.params.productId;
+  }
+  req.objFilter = objFilter;
+  next();
+};
+
+exports.setProductBody = (req, res, next) => {
+  if (!req.body.product) req.body.product = req.params.productId;
+  next();
+};
+
 exports.getAllReviews = asyncHandler(async (req, res, next) => {
   const { page } = req.query;
   const { limit } = req.query || 5;
   const skip = (page - 1) * limit;
-  const reviews = await Reviews.find({}).skip(skip).limit(limit);
+  let objectFilter = {};
+  if (req.objFilter) objectFilter = req.objFilter;
+  const reviews = await Reviews.find(objectFilter).skip(skip).limit(limit);
   res.status(200).json({
     result: reviews.length,
     page,
