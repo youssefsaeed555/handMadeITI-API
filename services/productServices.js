@@ -1,16 +1,11 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const slugify = require("slugify"); //convert any space to -
-//handling exceptions and passing t express error handler
 const asyncHandler = require("express-async-handler");
 const fs = require("fs/promises");
-// const { default: mongoose } = require('mongoose');
 const ApiError = require("../utils/ApiError");
 const cloud = require("../utils/cloudinary");
 const Product = require("../models/productModels");
-// const cloud = require('../utils/cloudinary');
 
 // desc   Get list of products
-// route  Get/api
 // access public
 exports.getProducts = asyncHandler(async (req, res) => {
   const page = req.query.page * 1 || 1;
@@ -43,7 +38,7 @@ exports.getProducts = asyncHandler(async (req, res) => {
 //desc Get specific product by id
 exports.getProduct = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const product = await Product.findById(id);
+  const product = await Product.findById(id).populate("reviews");
   if (!product) {
     return next(new ApiError(`No product for this id ${id} `, 404));
   }
