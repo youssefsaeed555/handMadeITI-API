@@ -36,7 +36,7 @@ exports.validateUpdateReview = [
     if (!review) {
       throw new Error("review not found");
     }
-    if (review.user.toString() !== req.user._id.toString()) {
+    if (review.user._id.toString() !== req.user._id.toString()) {
       throw new Error("you not allowed to modify this review");
     }
     return true;
@@ -51,7 +51,7 @@ exports.validateDeleteReview = [
       throw new Error("review not found");
     }
     if (req.user.role === "user") {
-      if (review.user.toString() !== req.user._id.toString()) {
+      if (review.user._id.toString() !== req.user._id.toString()) {
         throw new Error("you not allowed to modify this review");
       }
     }

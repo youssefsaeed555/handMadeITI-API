@@ -67,6 +67,7 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
       new ApiError(`There is no review to Update by this id ${id}`, 404)
     );
   }
+  review.save();
   res.status(200).json({
     message: "updated successfully",
     data: review,
@@ -81,5 +82,6 @@ exports.deleteReview = asyncHandler(async (req, res, next) => {
       new ApiError(`There is no review to delete by this id ${id}`, 404)
     );
   }
+  review.remove();
   res.status(204).send();
 });
