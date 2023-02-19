@@ -1,7 +1,7 @@
 // const { Router } = require("express");
 const express = require("express");
 
-const routes = express.Router();
+const routes = express.Router({ mergeParams: true });
 
 const {
   getProduct,
