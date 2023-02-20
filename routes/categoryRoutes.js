@@ -21,6 +21,10 @@ const router = express.Router();
 
 const upload = require("../middleware/upload_images");
 
+const product = require("./productRoute");
+
+router.use("/:categoryId/products", product);
+
 router
   .route("/")
   .get(getCategories)

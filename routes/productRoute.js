@@ -1,7 +1,7 @@
 // const { Router } = require("express");
 const express = require("express");
 
-const routes = express.Router();
+const routes = express.Router({ mergeParams: true });
 
 const {
   getProduct,
@@ -17,6 +17,10 @@ const {
   updateProductValidator,
   deleteProductValidator,
 } = require("../utils/validators/productValidator");
+
+const reviews = require("./reviewsRoutes");
+
+routes.use("/:productId/reviews", reviews);
 
 const upload = require("../middleware/upload_images");
 
