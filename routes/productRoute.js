@@ -8,24 +8,31 @@ const {
   getProducts,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
 } = require("../services/productServices");
 
 const {
   getProductValidator,
   createProductValidator,
   updateProductValidator,
-  deleteProductValidator
+  deleteProductValidator,
 } = require("../utils/validators/productValidator");
 
-const upload = require('../middleware/upload_images');
+const upload = require("../middleware/upload_images");
 
-const mixFiles = [{name:"imageCover",maxCount:1},{name:"images",maxCount:5}];
-routes.route("/").get(getProducts).post(upload.mixFiles(mixFiles),createProductValidator,createProduct);
+const mixFiles = [
+  { name: "imageCover", maxCount: 1 },
+  { name: "images", maxCount: 5 },
+];
+routes
+  .route("/")
+  .get(getProducts)
+  .post(upload.mixFiles(mixFiles), createProductValidator, createProduct);
 
-routes.route('/:id')
-.get(getProductValidator,getProduct)
-.put(updateProductValidator,updateProduct)
-.delete(deleteProductValidator,deleteProduct);
+routes
+  .route("/:id")
+  .get(getProductValidator, getProduct)
+  .put(updateProductValidator, updateProduct)
+  .delete(deleteProductValidator, deleteProduct);
 
 module.exports = routes;
