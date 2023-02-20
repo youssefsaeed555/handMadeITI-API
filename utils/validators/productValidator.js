@@ -1,7 +1,7 @@
 const { check } = require("express-validator");
 const validator = require("../../middleware/express_validator");
 // eslint-disable-next-line import/newline-after-import
-const Category = require("../../models/categoryModel"); //waiting
+const Category = require("../../models/categoryModel");
 exports.createProductValidator = [
   check("title")
     .isLength({ min: 3 })
