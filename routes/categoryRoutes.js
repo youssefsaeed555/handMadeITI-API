@@ -1,4 +1,7 @@
 const express = require("express");
+
+const authServices = require("../services/authServices");
+
 const {
   getCategoryValidator,
   updateCategoryValidator,
@@ -25,11 +28,27 @@ router.use("/:categoryId/products", product);
 router
   .route("/")
   .get(getCategories)
-  .post(upload.uploadSingle("image"), createCategoryValidator, createCategory);
+  .post(
+    authServices.protect,
+    authServices.isAllowedTo("admin"),
+    upload.uploadSingle("image"),
+    createCategoryValidator,
+    createCategory
+  );
 router
   .route("/:id")
   .get(getCategoryValidator, getCategory)
-  .put(updateCategoryValidator, updateCategory)
-  .delete(deleteCategoryValidator, deleteCategory);
+  .put(
+    authServices.protect,
+    authServices.isAllowedTo("admin"),
+    updateCategoryValidator,
+    updateCategory
+  )
+  .delete(
+    authServices.protect,
+    authServices.isAllowedTo("admin"),
+    deleteCategoryValidator,
+    deleteCategory
+  );
 
 module.exports = router;

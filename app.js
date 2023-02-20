@@ -19,6 +19,8 @@ const auth = require("./routes/authServices");
 const userServices = require("./routes/userServices");
 const productRoute = require("./routes/productRoute");
 const categoryRoutes = require("./routes/categoryRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
+const addressRoutes = require("./routes/addressRoutes");
 const reviewsRoutes = require("./routes/reviewsRoutes");
 
 //mounting routes
@@ -26,6 +28,8 @@ app.use("/api/v1/auth", auth);
 app.use("/api/v1/user", userServices);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/products", productRoute);
+app.use("/api/v1/wishlist", wishlistRoutes);
+app.use("/api/v1/addresses", addressRoutes);
 app.use("/api/v1/review", reviewsRoutes);
 
 app.all("*", (req, res, next) =>

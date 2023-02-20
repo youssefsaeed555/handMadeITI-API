@@ -32,6 +32,28 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "seller", "admin"],
     default: "user",
   },
+  wishlist: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Product",
+    },
+  ],
+  // address will be embedded her as it is small not too many address for user
+  addresses: [
+    {
+      id: {
+        //mongoose.Schema.Types.ObjectId for unique id
+        type: mongoose.Schema.Types.ObjectId,
+      },
+      //alias name like home , work ..
+      alias: String,
+      country: String,
+      governorate: String,
+      city: String,
+      street: String,
+      build_no: String,
+    },
+  ],
   changePasswordAt: Date,
   passwordCodeReset: String,
   passwordCodeResetExpire: Date,
