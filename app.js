@@ -15,24 +15,9 @@ app.use(express.static(path.join(__dirname, "uploads")));
 //requires
 const globalErrorHandling = require("./middleware/error_middleware");
 const ApiError = require("./utils/ApiError");
-const auth = require("./routes/authServices");
-const userServices = require("./routes/userServices");
-const productRoute = require("./routes/productRoute");
-const categoryRoutes = require("./routes/categoryRoutes");
-const wishlistRoutes = require("./routes/wishlistRoutes");
-const addressRoutes = require("./routes/addressRoutes");
-const reviewsRoutes = require("./routes/reviewsRoutes");
-const cartRoutes = require("./routes/cartRoutes");
 
-//mounting routes
-app.use("/api/v1/auth", auth);
-app.use("/api/v1/user", userServices);
-app.use("/api/v1/categories", categoryRoutes);
-app.use("/api/v1/products", productRoute);
-app.use("/api/v1/wishlist", wishlistRoutes);
-app.use("/api/v1/addresses", addressRoutes);
-app.use("/api/v1/review", reviewsRoutes);
-app.use("/api/v1/cart", cartRoutes);
+//mount routing
+require("./routes")(app);
 
 app.all("*", (req, res, next) =>
   //Create an error and send it to error handling middleware
