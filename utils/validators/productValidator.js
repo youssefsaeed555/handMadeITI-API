@@ -1,7 +1,7 @@
 const { check } = require("express-validator");
 const validator = require("../../middleware/express_validator");
 // eslint-disable-next-line import/newline-after-import
-const Category = require("../../models/categoryModel"); //waiting
+const Category = require("../../models/categoryModel");
 exports.createProductValidator = [
   check("title")
     .isLength({ min: 3 })
@@ -50,16 +50,13 @@ exports.createProductValidator = [
     .withMessage("Product must be belong to a category")
     .isMongoId()
     .withMessage("Invalid ID format ")
-    //check if this category exist or not
-    .custom((categoryId) =>
-      Category.findById(categoryId).then((category) => {
-        if (!category) {
-          return Promise.reject(
-            new Error(`No category for this id ${categoryId}`)
-          );
-        }
-      })
-    ),
+    .custom(async (val, { req }) => {
+      const findCategory = await Category.findById(val);
+      if (!findCategory) {
+        throw new Error(`category for this id: ${val} not found`);
+      }
+      return true;
+    }),
   check("ratingsAverage")
     .optional()
     .isNumeric()

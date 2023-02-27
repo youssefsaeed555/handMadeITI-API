@@ -22,6 +22,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
 const addressRoutes = require("./routes/addressRoutes");
 const reviewsRoutes = require("./routes/reviewsRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 //mounting routes
 app.use("/api/v1/auth", auth);
@@ -31,6 +32,7 @@ app.use("/api/v1/products", productRoute);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/addresses", addressRoutes);
 app.use("/api/v1/review", reviewsRoutes);
+app.use("/api/v1/cart", cartRoutes);
 
 app.all("*", (req, res, next) =>
   //Create an error and send it to error handling middleware
