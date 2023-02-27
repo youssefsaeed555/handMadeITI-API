@@ -9,6 +9,9 @@
     "start:dev": "nodemon app.js",
     "start:prod": "SET NODE_ENV=production && node app.js"
   },
+  "engines": {
+    "node": "18.12.1"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
