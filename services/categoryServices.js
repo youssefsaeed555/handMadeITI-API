@@ -43,7 +43,7 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
     image: result.url,
     imageId: result.id,
   });
-  await fs.unlink(req.file.path);
+  //await fs.unlink(req.file.path);
   res.status(201).json({
     message: "create successfully",
     data: category,
