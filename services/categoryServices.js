@@ -21,8 +21,6 @@ exports.getCategories = asyncHandler(async (req, res, next) => {
 
 // Get specific Category by ID
 exports.getCategory = asyncHandler(async (req, res, next) => {
-    console.log('upload path 1')
-
   const { id } = req.params;
   const category = await CategoryModel.findById(id);
   if (!category) {
@@ -37,9 +35,7 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 exports.createCategory = asyncHandler(async (req, res, next) => {
   if (!req.file)
     return next(new ApiError("image of category is required", 400));
-  console.log('upload path 1')
   const result = await cloud.uploads(req.file.path, "category");
-    console.log('upload path 2')
   const { name } = req.body;
   const category = await CategoryModel.create({
     name,
@@ -47,9 +43,7 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
     image: result.url,
     imageId: result.id,
   });
-  console.log('upload path 3')
   await fs.unlink(req.file.path);
-    console.log('upload path 4')
   res.status(201).json({
     message: "create successfully",
     data: category,
