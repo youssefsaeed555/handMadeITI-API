@@ -21,6 +21,8 @@ exports.getCategories = asyncHandler(async (req, res, next) => {
 
 // Get specific Category by ID
 exports.getCategory = asyncHandler(async (req, res, next) => {
+    console.log('upload path 1')
+
   const { id } = req.params;
   const category = await CategoryModel.findById(id);
   if (!category) {
