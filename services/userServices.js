@@ -40,3 +40,44 @@ exports.updatePhoto = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({ message: "photo update successfully" });
 });
+
+//desc Get logged user
+exports.getLoggedUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id).select("-password");
+  if (!user) {
+    return next(new ApiError(`this user not found `, 404));
+  }
+  res.status(200).json({ data: user });
+});
+
+//Delete logged user
+exports.deleteUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndDelete(req.user._id);
+
+  if (!user) {
+    return next(new ApiError(`There is no user to delete`, 404));
+  }
+  res.status(204).send();
+});
+
+exports.updateLoggedUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      userName: req.body.userName,
+      email: req.body.email,
+      phone: req.body.phone,
+      gender: req.body.gender,
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (!user) {
+    return next(new ApiError(`There is no user to Update by this id`, 404));
+  }
+  res.status(200).json({
+    data: user,
+  });
+});
