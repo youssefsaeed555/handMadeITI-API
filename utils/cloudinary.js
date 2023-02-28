@@ -18,3 +18,12 @@ exports.uploads = async (file, folderName) => {
     throw new Error("failed to upload in cloudinary");
   }
 };
+
+exports.destroy = async (file) => {
+  try {
+    const result = await cloudinary.uploader.destroy(file);
+    return { id: result.public_id };
+  } catch (err) {
+    throw new Error("failed to destroy in cloudinary");
+  }
+};
