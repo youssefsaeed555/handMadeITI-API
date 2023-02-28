@@ -61,4 +61,9 @@ productSchema.virtual("reviews", {
   foreignField: "product",
   localField: "_id",
 });
+
+productSchema.pre(/^find/, function (next) {
+  this.populate("category", "name");
+  next();
+});
 module.exports = mongoose.model("Product", productSchema);
