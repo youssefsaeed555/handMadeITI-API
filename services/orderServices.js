@@ -72,3 +72,41 @@ exports.getAllOrders = asyncHandler(async (req, res, next) => {
     data: orders,
   });
 });
+
+//change status of paid
+exports.updateOrderPaid = asyncHandler(async (req, res, next) => {
+  const updateOrder = await Order.findById(req.params.orderId);
+  if (!updateOrder) {
+    return next(
+      new ApiError(`no order for this id ${req.params.orderId}`, 404)
+    );
+  }
+
+  updateOrder.isPaid = true;
+  updateOrder.paidAt = Date.now();
+
+  await updateOrder.save();
+  return res.status(200).json({
+    message: "success",
+    data: updateOrder,
+  });
+});
+
+//change status of delivered
+exports.updateOrderDelivered = asyncHandler(async (req, res, next) => {
+  const updateOrder = await Order.findById(req.params.orderId);
+  if (!updateOrder) {
+    return next(
+      new ApiError(`no order for this id ${req.params.orderId}`, 404)
+    );
+  }
+
+  updateOrder.isDelivered = true;
+  updateOrder.DeliveredAt = Date.now();
+
+  await updateOrder.save();
+  return res.status(200).json({
+    message: "success",
+    data: updateOrder,
+  });
+});

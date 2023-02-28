@@ -3,6 +3,8 @@ const express = require("express");
 // npm run start:dev
 const app = express();
 const path = require("path");
+const cors = require("cors");
+const compression = require("compression");
 //config environment
 require("dotenv").config();
 
@@ -10,6 +12,9 @@ require("dotenv").config();
 require("./config/db")();
 
 app.use(express.json());
+app.use(cors());
+app.options("*", cors());
+app.use(compression());
 app.use(express.static(path.join(__dirname, "uploads")));
 
 //requires
