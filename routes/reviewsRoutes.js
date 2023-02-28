@@ -37,7 +37,7 @@ routes
   .put(protect, isAllowedTo("user"), validateUpdateReview, updateReview)
   .delete(
     protect,
-    isAllowedTo("user", "seller", "admin"),
+    isAllowedTo("user", "admin"),
     validateDeleteReview,
     deleteReview
   );

@@ -26,21 +26,6 @@ exports.createProductValidator = [
     .withMessage("Product price must be a number")
     .isLength({ max: 32 })
     .withMessage("To long price"),
-  check("priceAfterDiscount")
-    .optional()
-    .isNumeric()
-    .withMessage("Product priceAfterDiscount must be a number")
-    .toFloat()
-    .custom((value, { req }) => {
-      if (req.body.price <= value) {
-        throw new Error("priceAfterDiscount must be lower than price");
-      }
-      return true;
-    }),
-  check("colors")
-    .optional()
-    .isArray()
-    .withMessage("Colors must be array of string"),
   check("images")
     .optional()
     .isArray()
