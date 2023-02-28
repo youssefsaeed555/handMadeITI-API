@@ -2,11 +2,18 @@ const express = require("express");
 
 const routes = express.Router();
 
-const { changePassword, updatePhoto } = require("../services/userServices");
+const {
+  changePassword,
+  updatePhoto,
+  getLoggedUser,
+  updateLoggedUser,
+  deleteUser,
+} = require("../services/userServices");
 const { protect } = require("../services/authServices");
 const { uploadSingle } = require("../middleware/upload_images");
 const {
   changePasswordValidator,
+  validateUpdateLoggedUser,
 } = require("../utils/validators/userValidator");
 
 routes
@@ -16,5 +23,13 @@ routes
 routes
   .route("/updatePhoto")
   .put(uploadSingle("profileImg"), protect, updatePhoto);
+
+routes.route("/getMe").get(protect, getLoggedUser);
+
+routes
+  .route("/updateMe")
+  .put(protect, validateUpdateLoggedUser, updateLoggedUser);
+
+routes.route("/").delete(protect, deleteUser);
 
 module.exports = routes;

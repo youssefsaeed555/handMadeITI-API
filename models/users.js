@@ -60,4 +60,9 @@ const userSchema = new mongoose.Schema({
   isVerified: Boolean,
 });
 
+userSchema.pre(/^find/, function (next) {
+  this.populate("wishlist");
+  next();
+});
+
 module.exports = mongoose.model("Users", userSchema);

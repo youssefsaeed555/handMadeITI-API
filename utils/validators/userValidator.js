@@ -1,6 +1,7 @@
 const { check } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const validator = require("../../middleware/express_validator");
+const User = require("../../models/users");
 
 exports.changePasswordValidator = [
   check("currentPassword")
@@ -26,5 +27,24 @@ exports.changePasswordValidator = [
       }
       return true;
     }),
+  validator,
+];
+
+exports.validateUpdateLoggedUser = [
+  check("userName").optional(),
+  check("email")
+    .optional()
+    .isEmail()
+    .custom(async (val, { req }) => {
+      const checkUser = await User.findOne({ email: val });
+      if (checkUser) {
+        throw new Error("email already exist");
+      }
+      return true;
+    }),
+  check("phone")
+    .optional()
+    .isMobilePhone("ar-EG")
+    .withMessage("input valid egyptian phone"),
   validator,
 ];
