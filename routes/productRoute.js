@@ -18,6 +18,8 @@ const {
   deleteProductValidator,
 } = require("../utils/validators/productValidator");
 
+const { protect, isAllowedTo } = require("../services/authServices");
+
 const reviews = require("./reviewsRoutes");
 
 routes.use("/:productId/reviews", reviews);
@@ -31,12 +33,18 @@ const mixFiles = [
 routes
   .route("/")
   .get(getProducts)
-  .post(upload.mixFiles(mixFiles), createProductValidator, createProduct);
+  .post(
+    protect,
+    isAllowedTo("admin"),
+    upload.mixFiles(mixFiles),
+    createProductValidator,
+    createProduct
+  );
 
 routes
   .route("/:id")
   .get(getProductValidator, getProduct)
-  .put(updateProductValidator, updateProduct)
-  .delete(deleteProductValidator, deleteProduct);
+  .put(protect, isAllowedTo("admin"), updateProductValidator, updateProduct)
+  .delete(protect, isAllowedTo("admin"), deleteProductValidator, deleteProduct);
 
 module.exports = routes;

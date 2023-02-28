@@ -10,7 +10,7 @@ const {
 
 const router = express.Router();
 
-router.use(authServices.protect, authServices.isAllowedTo("user", "seller"));
+router.use(authServices.protect, authServices.isAllowedTo("user", "admin"));
 
 router.route("/").post(addAddress).get(getLoggedUserAddresses);
 
