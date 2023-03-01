@@ -10,6 +10,13 @@ require("dotenv").config();
 
 //connect mongodb
 require("./config/db")();
+const { webHookHandler } = require("./services/orderServices");
+
+app.post(
+  "/webhock-checkout",
+  express.raw({ type: "application/json" }),
+  webHookHandler
+);
 
 app.use(express.json());
 app.use(cors());

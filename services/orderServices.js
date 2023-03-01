@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
+
 const asyncHandler = require("express-async-handler");
 
 const Cart = require("../models/cartModel");
@@ -109,4 +112,80 @@ exports.updateOrderDelivered = asyncHandler(async (req, res, next) => {
     message: "success",
     data: updateOrder,
   });
+});
+
+exports.checkOutSession = asyncHandler(async (req, res, next) => {
+  const cart = await Cart.findById(req.params.cartId);
+  if (!cart) {
+    return next(new ApiError(`no cart for this user`, 404));
+  }
+
+  const totalOrderPrice = cart.totalPrice;
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price_data: {
+          currency: "egp",
+          unit_amount: totalOrderPrice * 100,
+          product_data: {
+            name: req.user.userName,
+            description: "welcome in handMade ITI ",
+          },
+        },
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+    success_url: `${req.protocol}://${req.get("host")}/orders`,
+    cancel_url: `${req.protocol}://${req.get("host")}/cart`,
+    client_reference_id: req.params.cartId,
+    customer_email: req.user.email,
+    metadata: req.body.shippingAddress,
+  });
+  return res.status(200).json({ status: "success", session });
+});
+
+const createCardOrder = async (session) => {
+  const cart = await Cart.findById(session.client_reference_id);
+
+  //create order
+  const order = await Order.create({
+    user: cart.user,
+    totalOrderPrice: session.amount_total / 100,
+    cartItems: cart.cartItems,
+    shippingAddress: session.metadata,
+    isPaid: true,
+    paidAt: Date.now(),
+    paymentMethod: "card",
+  });
+
+  //increase sold and decrese quantity of product
+  if (order) {
+    const bulkOptions = cart.cartItems.map((item) => ({
+      updateOne: {
+        filter: { _id: item.product },
+        update: { $inc: { sold: +item.quantity, quantity: -item.quantity } },
+      },
+    }));
+    await Product.bulkWrite(bulkOptions, {});
+    await Cart.findByIdAndDelete(session.client_reference_id);
+  }
+};
+
+exports.webHookHandler = asyncHandler(async (req, res, next) => {
+  const sig = req.headers["stripe-signature"];
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.WEBHOOK_STRIPE
+    );
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+  if (event.type === "checkout.session.completed") {
+    createCardOrder(event.data.object);
+  }
+  return res.status(200).json({ received: "success" });
 });
