@@ -16,7 +16,9 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
   const { productId } = req.body;
   let cart = await Cart.findOne({ user: req.user._id });
   const product = await Product.findById(productId);
-
+  if (product.quantity < 1) {
+    return next(new ApiError("this product is out of stock", 400));
+  }
   //if user haven't cart then create cart
   if (!cart) {
     cart = await Cart.create({
@@ -87,6 +89,18 @@ exports.updateQuantity = asyncHandler(async (req, res, next) => {
   const cartItemIndex = cart.cartItems.findIndex(
     (item) => item._id.toString() === req.params.cartItemId
   );
+  const product = await Product.findById(cart.cartItems[cartItemIndex].product);
+  if (!product) {
+    return next(new ApiError(`no product found to update quantity`, 404));
+  }
+  if (quantity > product.quantity) {
+    return next(
+      new ApiError(
+        `there is only ${product.quantity} for this product to add in cart`,
+        400
+      )
+    );
+  }
 
   if (cartItemIndex > -1) {
     const cartItem = cart.cartItems[cartItemIndex];
@@ -96,7 +110,7 @@ exports.updateQuantity = asyncHandler(async (req, res, next) => {
   calcTotalPrice(cart);
   await cart.save();
   return res.status(200).json({
-    message: "product removed from cart successfully",
+    message: "product updated successfully",
     numberOfCartItems: cart.cartItems.length,
     cart,
   });
