@@ -8,6 +8,7 @@ const {
   getAllOrders,
   updateOrderDelivered,
   updateOrderPaid,
+  checkOutSession,
 } = require("../services/orderServices");
 
 const { protect, isAllowedTo } = require("../services/authServices");
@@ -27,5 +28,9 @@ routes.route("/:orderId/pay").put(isAllowedTo("admin"), updateOrderPaid);
 routes
   .route("/:orderId/deliver")
   .put(isAllowedTo("admin"), updateOrderDelivered);
+
+routes
+  .route("/checkout-session/:cartId")
+  .get(isAllowedTo("user"), checkOutSession);
 
 module.exports = routes;
