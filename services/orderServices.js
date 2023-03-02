@@ -114,6 +114,24 @@ exports.updateOrderDelivered = asyncHandler(async (req, res, next) => {
   });
 });
 
+//change status of order
+exports.updateOrderStatus = asyncHandler(async (req, res, next) => {
+  const updateOrder = await Order.findById(req.params.orderId);
+  if (!updateOrder) {
+    return next(
+      new ApiError(`no order for this id ${req.params.orderId}`, 404)
+    );
+  }
+
+  updateOrder.orderStatus = req.body.orderStatus;
+
+  await updateOrder.save();
+  return res.status(200).json({
+    message: "update status successfully",
+    data: updateOrder,
+  });
+});
+
 exports.checkOutSession = asyncHandler(async (req, res, next) => {
   const cart = await Cart.findById(req.params.cartId);
   if (!cart) {

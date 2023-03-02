@@ -9,7 +9,10 @@ const {
   updateOrderDelivered,
   updateOrderPaid,
   checkOutSession,
+  updateOrderStatus,
 } = require("../services/orderServices");
+
+const { validateStatus } = require("../utils/validators/orderValidtor");
 
 const { protect, isAllowedTo } = require("../services/authServices");
 
@@ -28,6 +31,10 @@ routes.route("/:orderId/pay").put(isAllowedTo("admin"), updateOrderPaid);
 routes
   .route("/:orderId/deliver")
   .put(isAllowedTo("admin"), updateOrderDelivered);
+
+routes
+  .route("/:orderId/status")
+  .put(validateStatus, isAllowedTo("admin"), updateOrderStatus);
 
 routes
   .route("/checkout-session/:cartId")
