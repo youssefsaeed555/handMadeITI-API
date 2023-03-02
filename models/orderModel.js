@@ -15,9 +15,12 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     shippingAddress: {
-      details: String,
-      postalCode: Number,
+      alias: String,
+      country: String,
+      governorate: String,
       city: String,
+      street: String,
+      build_no: String,
       phone: String,
     },
     isPaid: {
