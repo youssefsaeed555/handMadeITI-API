@@ -8,8 +8,8 @@ const Product = require("../models/productModels");
 // desc   Get list of products
 // access public
 exports.getProducts = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
+  const page = req.query.page * 1 || 10;
+  const limit = req.query.limit * 1 || 10;
   const skip = (page - 1) * limit;
   const objectFilter = {};
   if (req.params.categoryId) {
@@ -111,6 +111,9 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   if (req.body.title) {
     req.body.slug = slugify(req.body.title);
+  }
+  if (req.file) {
+    const result = await cloud.uploads(req.file.path, "users");
   }
   const product = await Product.findOneAndUpdate({ _id: id }, req.body, {
     new: true,
