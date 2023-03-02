@@ -38,6 +38,11 @@ const orderSchema = new mongoose.Schema(
     },
     taxPrice: { type: Number, default: 0 },
     shippingPrice: Number,
+    orderStatus: {
+      type: String,
+      enum: ["pending", "accepted", "rejected"],
+      default: "pending",
+    },
   },
   { timestamps: true }
 );
