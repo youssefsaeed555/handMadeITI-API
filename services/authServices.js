@@ -48,7 +48,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
   }
   if (!token) {
-    return next(new ApiError('you must login to access this route", 401'));
+    return next(new ApiError("you must login to access this route", 401));
   }
   const decode = jwt.verify(token, process.env.JWT_SECRET);
 

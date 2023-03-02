@@ -18,7 +18,7 @@ exports.createProductValidator = [
     .withMessage("Product quantity is required")
     .isNumeric()
     .withMessage("Product quantity must be a number"),
-  check("sold").optional().isNumeric().withMessage("must be a number"),
+  check("sold").optional().isNumeric(),
   check("price")
     .notEmpty()
     .withMessage("Product price is required")
