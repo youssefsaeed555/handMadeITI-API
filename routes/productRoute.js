@@ -9,6 +9,7 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  updatePhoto,
 } = require("../services/productServices");
 
 const {
@@ -33,18 +34,21 @@ const upload = require("../middleware/upload_images");
 routes
   .route("/")
   .get(getProducts)
-  .post(
-    protect,
-    isAllowedTo("admin"),
-    upload.uploadSingle("imageCover"),
-    createProductValidator,
-    createProduct
-  );
+  .post(protect, isAllowedTo("admin"), createProductValidator, createProduct);
 
 routes
   .route("/:id")
   .get(getProductValidator, getProduct)
   .put(protect, isAllowedTo("admin"), updateProductValidator, updateProduct)
   .delete(protect, isAllowedTo("admin"), deleteProductValidator, deleteProduct);
+
+routes
+  .route("/updatePhoto/:id")
+  .put(
+    protect,
+    isAllowedTo("admin"),
+    upload.uploadSingle("imageCover"),
+    updatePhoto
+  );
 
 module.exports = routes;
