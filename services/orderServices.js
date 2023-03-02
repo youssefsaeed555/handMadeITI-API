@@ -122,7 +122,9 @@ exports.updateOrderStatus = asyncHandler(async (req, res, next) => {
       new ApiError(`no order for this id ${req.params.orderId}`, 404)
     );
   }
-
+  if (updateOrder.cancelOrder) {
+    return next(new ApiError(`sorry user cancel this order`, 400));
+  }
   updateOrder.orderStatus = req.body.orderStatus;
 
   await updateOrder.save();
@@ -209,18 +211,26 @@ exports.webHookHandler = asyncHandler(async (req, res, next) => {
 });
 
 exports.cancelOrder = asyncHandler(async (req, res, next) => {
-  const updateOrder = await Order.findById(req.params.orderId);
-  if (!updateOrder) {
+  const cancelOrder = await Order.findById(req.params.orderId);
+  if (!cancelOrder) {
     return next(
       new ApiError(`no order for this id ${req.params.orderId}`, 404)
     );
   }
 
-  updateOrder.cancelOrder = true;
+  if (cancelOrder.orderStatus !== "pending") {
+    return next(
+      new ApiError(
+        `sorry you can't cancel this order because it already accepted by admin`,
+        400
+      )
+    );
+  }
+  cancelOrder.cancelOrder = true;
 
-  await updateOrder.save();
+  await cancelOrder.save();
   return res.status(200).json({
     message: "order cancelled successfully",
-    data: updateOrder,
+    data: cancelOrder,
   });
 });
