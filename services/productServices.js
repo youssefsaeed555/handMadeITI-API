@@ -83,10 +83,9 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 //desc Create Product
 //access Private
 exports.createProduct = asyncHandler(async (req, res, next) => {
-  req.body.slug = slugify(req.body.title);
-  if (!req.file) {
-    return next(new ApiError(`image cover required  `, 400));
-  }
+  // if (!req.file) {
+  //   return next(new ApiError(`image cover required  `, 400));
+  // }
   // const imgArray = [];
   // if (req.files.images) {
   //   await Promise.all(
@@ -98,10 +97,9 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
   //   );
   // }
   // req.body.images = imgArray;
-  const result = await cloud.uploads(req.file.path, "products");
-  req.body.imageCover = result.url;
+  // const result = await cloud.uploads(req.file.path, "products");
+  // req.body.imageCover = result.url;
   const product = await Product.create(req.body);
-  fs.unlink(req.file.path);
   res.status(201).json({ data: product });
 });
 
@@ -131,4 +129,28 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
     return next(new ApiError(`No product for this id ${id} `, 404));
   }
   res.status(204).send();
+});
+
+exports.updatePhoto = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const product = await Product.findById(id);
+  if (!product) {
+    return next(new ApiError("this product not found", 400));
+  }
+  if (!req.file) {
+    return next(new ApiError("you must upload photo", 400));
+  }
+  const result = await cloud.uploads(req.file.path, "products");
+  if (product.imageCoverId !== undefined) {
+    await cloud.destroy(product.imageCoverId);
+  }
+
+  product.imageCover = result.url;
+  product.imageCoverId = result.id;
+
+  await product.save();
+  await fs.unlink(req.file.path);
+
+  return res.status(200).json({ message: "photo update successfully" });
 });

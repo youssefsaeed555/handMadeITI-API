@@ -15,6 +15,7 @@ const {
   getCategory,
   updateCategory,
   deleteCategory,
+  updatePhoto,
 } = require("../services/categoryServices");
 
 const router = express.Router();
@@ -51,4 +52,12 @@ router
     deleteCategory
   );
 
+router
+  .route("/updatePhoto/:id")
+  .put(
+    authServices.protect,
+    authServices.isAllowedTo("admin"),
+    upload.uploadSingle("image"),
+    updatePhoto
+  );
 module.exports = router;

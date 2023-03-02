@@ -9,11 +9,6 @@ const productSchema = new mongoose.Schema(
       minlength: [3, "Too short product title"],
       maxlength: [100, "Too long product title"],
     },
-    slug: {
-      type: String,
-      required: true,
-      lowercase: true,
-    },
     description: {
       type: String,
       required: [true, "Product description is required"],
@@ -35,11 +30,10 @@ const productSchema = new mongoose.Schema(
     },
     imageCover: {
       type: String,
-      required: [true, "Product Image cover is required"],
     },
     images: [String],
     category: {
-      type: mongoose.Schema.ObjectId,
+      type: mongoose.Types.ObjectId,
       ref: "Category",
       required: [true, "Product must be belong to category"],
     },
@@ -52,6 +46,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    imageCoverId: String,
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );

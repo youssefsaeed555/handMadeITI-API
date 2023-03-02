@@ -33,17 +33,11 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 
 //Create New category
 exports.createCategory = asyncHandler(async (req, res, next) => {
-  if (!req.file)
-    return next(new ApiError("image of category is required", 400));
-  const result = await cloud.uploads(req.file.path, "category");
   const { name } = req.body;
   const category = await CategoryModel.create({
     name,
     slug: slugify(name),
-    image: result.url,
-    imageId: result.id,
   });
-  await fs.unlink(req.file.path);
   res.status(201).json({
     message: "create successfully",
     data: category,
@@ -81,4 +75,28 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
     );
   }
   res.status(204).send();
+});
+
+exports.updatePhoto = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const category = await CategoryModel.findById(id);
+  if (!category) {
+    return next(new ApiError("this category not found", 404));
+  }
+  if (!req.file) {
+    return next(new ApiError("you must upload photo", 400));
+  }
+  const result = await cloud.uploads(req.file.path, "category");
+  if (category.imageId !== undefined) {
+    await cloud.destroy(category.imageId);
+  }
+
+  category.image = result.url;
+  category.imageId = result.id;
+
+  await category.save();
+  await fs.unlink(req.file.path);
+
+  return res.status(200).json({ message: "photo update successfully" });
 });
