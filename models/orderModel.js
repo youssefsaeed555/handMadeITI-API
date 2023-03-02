@@ -43,6 +43,10 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "accepted", "rejected"],
       default: "pending",
     },
+    cancelOrder: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

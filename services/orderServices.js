@@ -207,3 +207,20 @@ exports.webHookHandler = asyncHandler(async (req, res, next) => {
   }
   return res.status(200).json({ received: "success" });
 });
+
+exports.cancelOrder = asyncHandler(async (req, res, next) => {
+  const updateOrder = await Order.findById(req.params.orderId);
+  if (!updateOrder) {
+    return next(
+      new ApiError(`no order for this id ${req.params.orderId}`, 404)
+    );
+  }
+
+  updateOrder.cancelOrder = true;
+
+  await updateOrder.save();
+  return res.status(200).json({
+    message: "order cancelled successfully",
+    data: updateOrder,
+  });
+});
