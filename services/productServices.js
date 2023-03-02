@@ -112,9 +112,6 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
   if (req.body.title) {
     req.body.slug = slugify(req.body.title);
   }
-  if (req.file) {
-    const result = await cloud.uploads(req.file.path, "users");
-  }
   const product = await Product.findOneAndUpdate({ _id: id }, req.body, {
     new: true,
   });
