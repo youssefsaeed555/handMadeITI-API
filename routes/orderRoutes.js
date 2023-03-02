@@ -10,6 +10,7 @@ const {
   updateOrderPaid,
   checkOutSession,
   updateOrderStatus,
+  cancelOrder,
 } = require("../services/orderServices");
 
 const { validateStatus } = require("../utils/validators/orderValidtor");
@@ -27,6 +28,8 @@ routes.route("/:id").get(isAllowedTo("user"), getOrder);
 routes.route("/:cartId").post(isAllowedTo("user"), createOrder);
 
 routes.route("/:orderId/pay").put(isAllowedTo("admin"), updateOrderPaid);
+
+routes.route("/:orderId/cancel").put(isAllowedTo("user"), cancelOrder);
 
 routes
   .route("/:orderId/deliver")
