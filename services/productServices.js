@@ -84,24 +84,24 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 //access Private
 exports.createProduct = asyncHandler(async (req, res, next) => {
   req.body.slug = slugify(req.body.title);
-  if (!req.files.imageCover) {
+  if (!req.file) {
     return next(new ApiError(`image cover required  `, 400));
   }
-  const imgArray = [];
-  if (req.files.images) {
-    await Promise.all(
-      req.files.images.map(async (ele) => {
-        const result = await cloud.uploads(ele.path);
-        imgArray.push(result.url);
-        fs.unlink(ele.path);
-      })
-    );
-  }
-  req.body.images = imgArray;
-  const result = await cloud.uploads(req.files.imageCover[0].path, "products");
+  // const imgArray = [];
+  // if (req.files.images) {
+  //   await Promise.all(
+  //     req.files.images.map(async (ele) => {
+  //       const result = await cloud.uploads(ele.path);
+  //       imgArray.push(result.url);
+  //       fs.unlink(ele.path);
+  //     })
+  //   );
+  // }
+  // req.body.images = imgArray;
+  const result = await cloud.uploads(req.file.path, "products");
   req.body.imageCover = result.url;
   const product = await Product.create(req.body);
-  fs.unlink(req.files.imageCover[0].path);
+  fs.unlink(req.file.path);
   res.status(201).json({ data: product });
 });
 
