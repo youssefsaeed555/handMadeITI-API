@@ -8,7 +8,7 @@ const Product = require("../models/productModels");
 // desc   Get list of products
 // access public
 exports.getProducts = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 10;
+  const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 10;
   const skip = (page - 1) * limit;
   const objectFilter = {};
