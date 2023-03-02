@@ -26,17 +26,17 @@ routes.use("/:productId/reviews", reviews);
 
 const upload = require("../middleware/upload_images");
 
-const mixFiles = [
-  { name: "imageCover", maxCount: 1 },
-  { name: "images", maxCount: 5 },
-];
+// const mixFiles = [
+//   { name: "imageCover", maxCount: 1 },
+//   { name: "images", maxCount: 5 },
+// ];
 routes
   .route("/")
   .get(getProducts)
   .post(
     protect,
     isAllowedTo("admin"),
-    upload.mixFiles(mixFiles),
+    upload.uploadSingle("imageCover"),
     createProductValidator,
     createProduct
   );
