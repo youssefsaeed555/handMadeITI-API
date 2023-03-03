@@ -9,7 +9,7 @@ const cloud = require("../utils/cloudinary");
 //Get All categories
 exports.getCategories = asyncHandler(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
+  const limit = req.query.limit * 1 || 10;
   const skip = (page - 1) * limit;
   const categories = await CategoryModel.find({}).skip(skip).limit(limit);
   res.status(200).json({
